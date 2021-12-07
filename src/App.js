@@ -34,6 +34,7 @@ function App() {
 	const [password, setPassword] = useState('');
 	const [email, setEmail] = useState('');
 	const [user, setUser] = useState(null);
+	const [openSignIn, setOpenSignIn] = useState(false);
 	const [posts, setPosts] = useState([
 		{
 			username: 'wazimu',
@@ -71,6 +72,13 @@ function App() {
 		setOpen(false);
 	};
 
+	const signIn = e => {
+		e.preventDefault();
+		auth
+			.signInWithEmailAndPassword(email, password)
+			.catch(err => alert(err.message));
+		setOpenSignIn(false);
+	};
 	return (
 		<div className="app">
 			<Modal open={open} onClose={() => setOpen(false)}>
@@ -107,6 +115,34 @@ function App() {
 					</form>
 				</div>
 			</Modal>
+			<Modal open={openSignIn} onClose={() => setOpenSignIn(false)}>
+				<div style={modalStyle} className={classes.paper}>
+					<form className="app__signup">
+						<center>
+							<img
+								className="app__headerImage"
+								src="logo192.png"
+								alt="Header"
+							/>
+						</center>
+						<Input
+							placeholder="email"
+							type="text"
+							value={email}
+							onChange={e => setEmail(e.target.value)}
+						/>
+						<Input
+							placeholder="password"
+							type="password"
+							value={password}
+							onChange={e => setPassword(e.target.value)}
+						/>
+						<Button type="submit" onClick={signIn}>
+							Sign In
+						</Button>
+					</form>
+				</div>
+			</Modal>
 			<div className="app__header">
 				<img className="app__headerImage" src="logo192.png" alt="Header" />
 				<Button onClick={() => setOpen(true)}>Sign Up</Button>
@@ -114,7 +150,10 @@ function App() {
 			{user ? (
 				<Button onClick={() => auth.signOut()}>Logout</Button>
 			) : (
-				<Button onClick={() => setOpen(true)}>Sign Up</Button>
+				<div className="app__loginContainer">
+					<Button onClick={() => setOpenSignIn(true)}>Sign In</Button>
+					<Button onClick={() => setOpen(true)}>Sign Up</Button>
+				</div>
 			)}
 			{posts.map(({ username, caption, imageUrl }) => (
 				<Post username={username} caption={caption} imageUrl={imageUrl} />
