@@ -50,17 +50,47 @@ function App() {
 	const signUp = e => {
 		e.preventDefault();
 	};
+
 	return (
 		<div className="app">
 			<Modal open={open} onClose={() => setOpen(false)}>
 				<div style={modalStyle} className={classes.paper}>
-					<h2>Modal Code</h2>
+					<form className="app__signup">
+						<center>
+							<img
+								className="app__headerImage"
+								src="logo192.png"
+								alt="Header"
+							/>
+						</center>
+						<Input
+							placeholder="username"
+							type="text"
+							value={username}
+							onChange={e => setUsername(e.target.value)}
+						/>
+						<Input
+							placeholder="email"
+							type="text"
+							value={email}
+							onChange={e => setEmail(e.target.value)}
+						/>
+						<Input
+							placeholder="password"
+							type="password"
+							value={password}
+							onChange={e => setPassword(e.target.value)}
+						/>
+						<Button type="submit" onClick={signUp}>
+							Sign Up
+						</Button>
+					</form>
 				</div>
 			</Modal>
 			<div className="app__header">
 				<img className="app__headerImage" src="logo192.png" alt="Header" />
+				<Button onClick={() => setOpen(true)}>Sign Up</Button>
 			</div>
-			<Button onClick={() => setOpen(true)}>Sign Up</Button>
 			{posts.map(({ username, caption, imageUrl }) => (
 				<Post username={username} caption={caption} imageUrl={imageUrl} />
 			))}
