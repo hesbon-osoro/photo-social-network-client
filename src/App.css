@@ -12,3 +12,7 @@
 	margin-left: 10px;
 	height: 40px;
 }
+.app__signup {
+	display: flex;
+	flex-direction: column;
+}
