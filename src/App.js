@@ -111,6 +111,11 @@ function App() {
 				<img className="app__headerImage" src="logo192.png" alt="Header" />
 				<Button onClick={() => setOpen(true)}>Sign Up</Button>
 			</div>
+			{user ? (
+				<Button onClick={() => auth.signOut()}>Logout</Button>
+			) : (
+				<Button onClick={() => setOpen(true)}>Sign Up</Button>
+			)}
 			{posts.map(({ username, caption, imageUrl }) => (
 				<Post username={username} caption={caption} imageUrl={imageUrl} />
 			))}
