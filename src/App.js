@@ -29,6 +29,9 @@ function App() {
 	const classes = useStyles();
 	const [modalStyle] = useState(getModalStyle);
 	const [open, setOpen] = useState(false);
+	const [username, setUsername] = useState('');
+	const [password, setPassword] = useState('');
+	const [email, setEmail] = useState('');
 	const [posts, setPosts] = useState([
 		{
 			username: 'wazimu',
@@ -43,6 +46,10 @@ function App() {
 				'https://quotefancy.com/media/wallpaper/3840x2160/126631-Charles-Dickens-Quote-And-a-beautiful-world-you-live-in-when-it-is.jpg',
 		},
 	]);
+
+	const signUp = e => {
+		e.preventDefault();
+	};
 	return (
 		<div className="app">
 			<Modal open={open} onClose={() => setOpen(false)}>
