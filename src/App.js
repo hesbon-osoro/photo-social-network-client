@@ -3,7 +3,7 @@ import './App.css';
 import Post from './components/post/Post';
 import { makeStyles } from '@material-ui/core/styles';
 import { Modal, Button, Input } from '@material-ui/core';
-import { auth } from './firebase';
+import {auth} from './firebase';
 
 const getModalStyle = () => {
 	const top = 50;
@@ -49,16 +49,15 @@ function App() {
 		},
 	]);
 
-	useEffect(() => {
-		const unsubscribe = auth.onAuthStateChanged(authUser => {
-			if (authUser) {
-				console.log(authUser);
-				setUser(authUser);
-			}
-		});
-	});
+	useEffect(()=>{
+		const unsubscribe=auth.onAuthStateChanged(authUser=>{if(authUser){console.log(authUser)
+		setUser(authUser)}else{setUser(null)}})
+		return ()=>{unsubscribe()}
+	})
 	const signUp = e => {
 		e.preventDefault();
+		auth.createUserWithEmailAndPassword(email,password).then(authUser=>authUser.user.updateProfile({displayName:username})).catch(err=>alert(err.message))
+		setOpen(false);
 	};
 
 	return (
