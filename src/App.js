@@ -1,8 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import Post from './components/post/Post';
+import { makeStyles } from '@material-ui/core/styles';
+import { Modal, Button, Input } from '@material-ui/core';
+
+const getModalStyle = () => {
+	const top = 50;
+	const left = 50;
+	return {
+		top: `${top}%`,
+		left: `${left}%`,
+		transform: `translate(-${top}%,-${left}%)`,
+	};
+};
+
+const useStyles = makeStyles(theme => ({
+	paper: {
+		position: 'absolute',
+		width: 400,
+		backgroundColor: theme.palette.background.paper,
+		border: '2px solid #000',
+		boxShadow: theme.shadows[5],
+		padding: theme.spacing(2, 4, 3),
+	},
+}));
 
 function App() {
+	const classes = useStyles();
+	const [modalStyle] = useState(getModalStyle);
+	const [open, setOpen] = useState(false);
 	const [posts, setPosts] = useState([
 		{
 			username: 'wazimu',
@@ -19,9 +45,15 @@ function App() {
 	]);
 	return (
 		<div className="app">
+			<Modal open={open} onClose={() => setOpen(false)}>
+				<div style={modalStyle} className={classes.paper}>
+					<h2>Modal Code</h2>
+				</div>
+			</Modal>
 			<div className="app__header">
 				<img className="app__headerImage" src="logo192.png" alt="Header" />
 			</div>
+			<Button onClick={() => setOpen(true)}>Sign Up</Button>
 			{posts.map(({ username, caption, imageUrl }) => (
 				<Post username={username} caption={caption} imageUrl={imageUrl} />
 			))}
