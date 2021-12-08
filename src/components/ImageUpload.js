@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import './ImageUpload.css';
+import { storage } from '../firebase';
+import axios from '../axios';
 
 const ImageUpload = ({ username }) => {
 	const [image, setImage] = useState(null);
 	const [progress, setProgress] = useState(0);
 	const [caption, setCaption] = useState('');
+	const [url, setUrl] = useState('');
 
 	const handleChange = e => {
 		if (e.target.files[0]) {
@@ -12,7 +15,38 @@ const ImageUpload = ({ username }) => {
 		}
 	};
 
-	const handleUpload = () => {};
+	const handleUpload = () => {
+		const uploadTask = storage.ref(`images/${image.name}`).put(image);
+		uploadTask.on(
+			'state_changed',
+			snapshot => {
+				const progress = Math.round(
+					(snapshot.bytesTransferred / snapshot.totalBytes) * 100
+				);
+				setProgress(progress);
+			},
+			err => {
+				console.log(err);
+			},
+			() => {
+				storage
+					.ref('images')
+					.child(image.name)
+					.getDownloadURL()
+					.then(url => {
+						setUrl(url);
+						axios.post('/upload', {
+							caption: caption,
+							user: username,
+							image: url,
+						});
+						setProgress(0);
+						setCaption('');
+						setImage(null);
+					});
+			}
+		);
+	};
 
 	return (
 		<div className="imageUpload">
