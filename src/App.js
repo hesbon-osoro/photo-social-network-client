@@ -4,6 +4,8 @@ import Post from './components/post/Post';
 import { makeStyles } from '@material-ui/core/styles';
 import { Modal, Button, Input } from '@material-ui/core';
 import { auth } from './firebase';
+import ImageUpload from './components/ImageUpload';
+import axios from './axios';
 
 const getModalStyle = () => {
 	const top = 50;
@@ -35,21 +37,11 @@ function App() {
 	const [email, setEmail] = useState('');
 	const [user, setUser] = useState(null);
 	const [openSignIn, setOpenSignIn] = useState(false);
-	const [posts, setPosts] = useState([
-		{
-			username: 'wazimu',
-			caption: 'awesome websites using MERNG stack',
-			imageUrl:
-				'https://www.techlifediary.com/wp-content/uploads/2020/06/react-js.png',
-		},
-		{
-			username: 'hesbon',
-			caption: 'Such a beautiful world',
-			imageUrl:
-				'https://quotefancy.com/media/wallpaper/3840x2160/126631-Charles-Dickens-Quote-And-a-beautiful-world-you-live-in-when-it-is.jpg',
-		},
-	]);
+	const [posts, setPosts] = useState([]);
 
+	useEffect(() => {
+		axios.get('/sync').then(res => setPosts(res.data));
+	}, []);
 	useEffect(() => {
 		const unsubscribe = auth.onAuthStateChanged(authUser => {
 			if (authUser) {
@@ -145,19 +137,26 @@ function App() {
 			</Modal>
 			<div className="app__header">
 				<img className="app__headerImage" src="logo192.png" alt="Header" />
-				<Button onClick={() => setOpen(true)}>Sign Up</Button>
+				{user ? (
+					<Button onClick={() => auth.signOut()}>Logout</Button>
+				) : (
+					<div className="app__loginContainer">
+						<Button onClick={() => setOpenSignIn(true)}>Sign In</Button>
+						<Button onClick={() => setOpen(true)}>Sign Up</Button>
+					</div>
+				)}
 			</div>
-			{user ? (
-				<Button onClick={() => auth.signOut()}>Logout</Button>
+
+			<div className="app__posts">
+				{posts.map(({ user, caption, image }) => (
+					<Post username={user} caption={caption} imageUrl={image} />
+				))}
+			</div>
+			{user?.displayName ? (
+				<ImageUpload username={user.displayName} />
 			) : (
-				<div className="app__loginContainer">
-					<Button onClick={() => setOpenSignIn(true)}>Sign In</Button>
-					<Button onClick={() => setOpen(true)}>Sign Up</Button>
-				</div>
+				<h3 className="app__notLogin">Need to login to upload</h3>
 			)}
-			{posts.map(({ username, caption, imageUrl }) => (
-				<Post username={username} caption={caption} imageUrl={imageUrl} />
-			))}
 		</div>
 	);
 }
