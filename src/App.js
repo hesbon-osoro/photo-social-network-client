@@ -6,7 +6,10 @@ import { Modal, Button, Input } from '@material-ui/core';
 import { auth } from './firebase';
 import ImageUpload from './components/ImageUpload';
 import axios from './axios';
-
+import Pusher from 'pusher-js';
+const pusher = new Pusher('157b02274c30b0353461', {
+	cluster: 'mt1',
+});
 const getModalStyle = () => {
 	const top = 50;
 	const left = 50;
@@ -39,9 +42,19 @@ function App() {
 	const [openSignIn, setOpenSignIn] = useState(false);
 	const [posts, setPosts] = useState([]);
 
+	const fetchPosts = async () => {
+		await axios.get('/sync').then(res => setPosts(res.data));
+	};
+
 	useEffect(() => {
-		axios.get('/sync').then(res => setPosts(res.data));
+		fetchPosts();
 	}, []);
+	useEffect(() => {
+		const channel = pusher.subscribe('posts');
+		channel.bind('inserted', data => {
+			fetchPosts();
+		});
+	});
 	useEffect(() => {
 		const unsubscribe = auth.onAuthStateChanged(authUser => {
 			if (authUser) {
