@@ -8,3 +8,4 @@
 - Express
 - Pusher
 - Firebase
+- Email Authentication
