@@ -19,6 +19,6 @@
 ![Signin popup](assets/photo-social%20login.png)
 
 ## Creating a Post
-![Create post](assets/photo-photo-social%20create%20post.png)
-
+![Create post](assets/photo-social%20create%20post.png)
+## Sample posts
 ![Sample posts](assets/photo-social1.png)
